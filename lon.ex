@@ -1,4 +1,6 @@
 #!/usr/bin/eui
+include file.e
+include get.e
 include lib/logging.e
 include lib/util.e
 include alg/encdec01.e
@@ -45,9 +47,9 @@ procedure show_help()
   show_header()
   printf(1, "\tPlease specify command line arguments to indicate encoding or decoding\n")
   printf(1, "\tTo encode a file, use the -e flag as below:\n\n")
-  printf(1, "\t\t  [program] -a algorithm -e inputfile outputfile\n\n")
+  printf(1, "\t\t  [program] -a algorithm -e -i inputfile -o outputfile\n\n")
   printf(1, "\tTo decode a file, use the -d flag as below:\n\n")
-  printf(1, "\t\t  [program] -a algorithm -d inputfile outputfile\n\n")
+  printf(1, "\t\t  [program] -a algorithm -d -i inputfile -o outputfile\n\n")
   printf(1, "\t Available Algorithm Identifiers: 01,35\n\n")
 end procedure
 
@@ -66,6 +68,7 @@ procedure main()
        printf(1, "\n Encoding: " & cl_input & "\n")
        switch cl_algorithm with fallthru do
          case "01" then
+           process_encode_01(cl_input, cl_output, ENC_BUFF_SIZE)
            break
          case "35" then
            break
@@ -78,6 +81,7 @@ procedure main()
          printf(1, "\n Decoding: " & cl_input & "\n")
          switch cl_algorithm with fallthru do
            case "01" then
+             process_decode_01(cl_input, cl_output)
              break
            case "35" then
              break
