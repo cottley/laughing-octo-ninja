@@ -1,9 +1,17 @@
 
 
 function process_encode_02_chunk(sequence chunk)
-  log_debug("Geting bits for a " & int_to_bits('a',8))
-  printf(1, int_to_bits(chunk[1], 8))
-  return chunk
+  sequence result = {}
+  log_debug("Chunk length is " & int_to_string(length(chunk)))
+  for i = 1 to length(chunk) do
+    log_trace_pretty("Getting bits for element " & int_to_string(i) & " of chunk", int_to_bits(chunk[i],8), {})
+    log_trace_pretty("Negating bits for element " & int_to_string(i) & " of chunk", int_to_bits(not_bits(chunk[i]),8), {})
+    result &= bits_to_int(int_to_bits(not_bits(chunk[i]),8))    
+  end for
+
+  log_debug_pretty("Result is", result, {})
+
+  return result
 end function
 
 
@@ -36,7 +44,15 @@ global procedure process_encode_02(sequence infilename, sequence outfilename, in
 end procedure
 
 function process_decode_02_chunk(sequence chunk)
-  return chunk
+  sequence result = {}
+  log_debug("Chunk length is " & int_to_string(length(chunk)))
+  for i = 1 to length(chunk) do
+    log_trace_pretty("Getting bits for element " & int_to_string(i) & " of chunk", int_to_bits(chunk[i],8), {})
+    log_trace_pretty("Negating bits for element " & int_to_string(i) & " of chunk", int_to_bits(not_bits(chunk[i]),8), {})
+    result &= bits_to_int(int_to_bits(not_bits(chunk[i]),8)) 
+  end for
+  log_debug_pretty("Result is", result, {})
+  return result
 end function
 
 
