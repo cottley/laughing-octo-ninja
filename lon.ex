@@ -71,7 +71,7 @@ procedure main()
        switch cl_algorithm with fallthru do
          case "01" then process_encode_01(cl_input, cl_output, ENC_BUFF_SIZE) break
          case "02" then process_encode_02(cl_input, cl_output, ENC_BUFF_SIZE) break
-         case "35" then break
+         case "35" then process_encode_35(cl_input, cl_output, ENC_BUFF_SIZE) break
          case else
            printf(1, "\tError, algorithm id: " & cl_algorithm & " is not recognized.\n")
        end switch
@@ -82,7 +82,7 @@ procedure main()
          switch cl_algorithm with fallthru do
            case "01" then process_decode_01(cl_input, cl_output) break
            case "02" then process_decode_02(cl_input, cl_output) break
-           case "35" then break
+           case "35" then process_decode_35(cl_input, cl_output) break
            case else
              printf(1, "\tError, algorithm id: " & cl_algorithm & " is not recognized.\n")
          end switch 
