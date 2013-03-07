@@ -31,9 +31,25 @@ global procedure log_trace(sequence message)
    end if
 end procedure
 
+global procedure log_trace_pretty(sequence message, object x, sequence options)
+   if (LOG_LEVEL <= LOG_LEVEL_TRACE) and (file_num != -1) then
+     printf(file_num, "[TRACE] " & message & " ")
+     pretty_print(file_num, x, options)
+     printf(file_num, "\n")
+   end if
+end procedure
+
 global procedure log_debug(sequence message)
    if (LOG_LEVEL <= LOG_LEVEL_DEBUG) and (file_num != -1) then
      printf(file_num, "[DEBUG] " & message & '\n')
+   end if
+end procedure
+
+global procedure log_debug_pretty(sequence message, object x, sequence options)
+   if (LOG_LEVEL <= LOG_LEVEL_DEBUG) and (file_num != -1) then
+     printf(file_num, "[DEBUG] " & message & " ")
+     pretty_print(file_num, x, options)
+     printf(file_num, "\n")
    end if
 end procedure
 
