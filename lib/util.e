@@ -11,3 +11,6 @@ global procedure close_binary_read(integer fn)
   end if
 end procedure
 
+global function int_to_string(integer i) 
+  return sprintf("%d", i)
+end function
