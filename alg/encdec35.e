@@ -1,15 +1,20 @@
 
+include std/search.e
 
 function process_encode_35_chunk(sequence chunk)
   sequence result = {}
   log_debug("Chunk length is " & int_to_string(length(chunk)))
+  -- 11 bits for max length of any byte occurance
+  log_debug("Counting number of zero bytes " & int_to_string(length(find_all(0, chunk))))
+  log_debug_pretty("Zero byte locations ", find_all(0, chunk), {})
+
   for i = 1 to length(chunk) do
     log_trace_pretty("Getting bits for element " & int_to_string(i) & " of chunk", int_to_bits(chunk[i],8), {})
     log_trace_pretty("Negating bits for element " & int_to_string(i) & " of chunk", int_to_bits(not_bits(chunk[i]),8), {})
     result &= bits_to_int(int_to_bits(not_bits(chunk[i]),8))    
   end for
 
-  log_debug_pretty("Result is", result, {})
+  log_trace_pretty("Result is", result, {})
 
   return result
 end function
@@ -51,7 +56,7 @@ function process_decode_35_chunk(sequence chunk)
     log_trace_pretty("Negating bits for element " & int_to_string(i) & " of chunk", int_to_bits(not_bits(chunk[i]),8), {})
     result &= bits_to_int(int_to_bits(not_bits(chunk[i]),8)) 
   end for
-  log_debug_pretty("Result is", result, {})
+  log_trace_pretty("Result is", result, {})
   return result
 end function
 
