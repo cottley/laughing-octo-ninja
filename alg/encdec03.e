@@ -60,6 +60,8 @@ function process_encode_03_chunk(sequence chunk)
 
   log_debug_pretty("Bit chunk ", first16bytechunk_asbits, {})
 
+  log_debug("First bit :" & int_to_string(first16bytechunk_asbits[1]))
+
   sequence bitfrequency =  raw_frequency(first16bytechunk_asbits)
 
   --log_debug_pretty("Bit frequency ", raw_frequency(first16bytechunk_asbits), {})
