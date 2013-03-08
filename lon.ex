@@ -6,6 +6,7 @@ include lib/logging.e
 include lib/util.e
 include alg/encdec01.e
 include alg/encdec02.e
+include alg/encdec03.e
 include alg/encdec35.e
 
 
@@ -52,7 +53,7 @@ procedure show_help()
   printf(1, "\t\t  [program] -a algorithm -e -i inputfile -o outputfile\n\n")
   printf(1, "\tTo decode a file, use the -d flag as below:\n\n")
   printf(1, "\t\t  [program] -a algorithm -d -i inputfile -o outputfile\n\n")
-  printf(1, "\t Available Algorithm Identifiers: 01,02,35\n\n")
+  printf(1, "\t Available Algorithm Identifiers: 01,02,03,35\n\n")
 end procedure
 
 procedure main()
@@ -71,6 +72,7 @@ procedure main()
        switch cl_algorithm with fallthru do
          case "01" then process_encode_01(cl_input, cl_output, ENC_BUFF_SIZE) break
          case "02" then process_encode_02(cl_input, cl_output, ENC_BUFF_SIZE) break
+         case "03" then process_encode_03(cl_input, cl_output, ENC_BUFF_SIZE) break
          case "35" then process_encode_35(cl_input, cl_output, ENC_BUFF_SIZE) break
          case else
            printf(1, "\tError, algorithm id: " & cl_algorithm & " is not recognized.\n")
@@ -82,6 +84,7 @@ procedure main()
          switch cl_algorithm with fallthru do
            case "01" then process_decode_01(cl_input, cl_output) break
            case "02" then process_decode_02(cl_input, cl_output) break
+           case "03" then process_decode_03(cl_input, cl_output) break
            case "35" then process_decode_35(cl_input, cl_output) break
            case else
              printf(1, "\tError, algorithm id: " & cl_algorithm & " is not recognized.\n")
