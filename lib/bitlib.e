@@ -61,8 +61,22 @@ global function bitlib_permuteone(sequence in)
 
     if (nextOneLoc != 0) then
       -- We can continue to permute
+      result[nextOneLoc+1] = 1
+      result[nextOneLoc] = 0
+  
+      integer index = nextOneLoc + 1
+      integer endindexoffset = 1
+      while (index < sequenceSize-endindexoffset) do
+        index += 1
+        endindexoffset -= 1
+
+        integer savedbit = result[index]
+        result[index] = result[sequenceSize-endindexoffset]
+        result[sequenceSize-endindexoffset] = savedbit
+      end while
+
     else
-      -- No 1s left
+      -- No 1s left, can't permute anymore
     end if
 
   end if
