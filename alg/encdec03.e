@@ -77,16 +77,18 @@ function getMatchingPermNumber(sequence chunk, integer chunksum, integer noofset
   
   
   log_debug_pretty("Initial Bit chunk ", perm_chunk, {})
-  log_debug("No of bits is: " & int_to_string(bitlib_no_of_bits(perm_chunk)))
-  log_debug_pretty("Added one and now chunk is ", bitlib_add_one(perm_chunk), {})
-  log_debug("No of bits is: " & int_to_string(bitlib_no_of_bits(bitlib_add_one(perm_chunk))))
+  --log_debug("No of bits is: " & int_to_string(bitlib_no_of_bits(perm_chunk)))
+  --log_debug_pretty("Added one and now chunk is ", bitlib_add_one(perm_chunk), {})
+  --log_debug("No of bits is: " & int_to_string(bitlib_no_of_bits(bitlib_add_one(perm_chunk))))
   --log_debug_pretty("Permuted Bit chunk ", bitlib_permuteone(perm_chunk), {})
   
   sequence perm1 = bitlib_permuteone(perm_chunk)
   result += 1
+  -- log_debug_pretty("Permuted Bit chunk " & int_to_string(result) & " ", perm1, {})
   
   while (not(equal(chunk, perm1))) do
     perm1 = bitlib_permuteone(perm1)
+    -- log_debug_pretty("Permuted Bit chunk " & int_to_string(result) & " ", perm1, {})
     result += 1
   end while
 

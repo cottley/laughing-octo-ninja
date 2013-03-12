@@ -1,7 +1,9 @@
 include std/stats.e
+include std/search.e
 
-integer FALSE = 0
-integer TRUE = 1
+
+constant FALSE = 0
+constant TRUE = 1
 
 global function bitlib_add_one(sequence in)
   sequence result = in
@@ -47,7 +49,7 @@ end function
 
 global function bitlib_permuteone(sequence in)
   -- Find last set bit
-  integer lastSetBitLoc = rfind(in, 1)
+  integer lastSetBitLoc = rfind(1, in)
   integer sequenceSize = length(in)
   sequence result = in 
   if (lastSetBitLoc != sequenceSize) then
@@ -55,9 +57,9 @@ global function bitlib_permuteone(sequence in)
     result[lastSetBitLoc] = 0
   else 
     -- Find the last 0
-    integer lastZeroBitLoc = rfind(in, 0)
+    integer lastZeroBitLoc = rfind(0, in)
     -- Find the next 1
-    integer nextOneLoc = rfind(in, 1, lastZeroBitLoc * -1)
+    integer nextOneLoc = rfind(1, in, lastZeroBitLoc)
 
     if (nextOneLoc != 0) then
       -- We can continue to permute
@@ -65,13 +67,13 @@ global function bitlib_permuteone(sequence in)
       result[nextOneLoc] = 0
   
       integer index = nextOneLoc + 1
-      integer endindexoffset = 1
-      while (index < sequenceSize-endindexoffset) do
+      integer endindexoffset = 0
+      while (index < (sequenceSize-endindexoffset)) do
         index += 1
-        endindexoffset -= 1
+        endindexoffset += 1
 
         integer savedbit = result[index]
-        result[index] = result[sequenceSize-endindexoffset]
+        result[index] = result[(sequenceSize-endindexoffset)]
         result[sequenceSize-endindexoffset] = savedbit
       end while
 
