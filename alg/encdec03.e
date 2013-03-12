@@ -71,57 +71,24 @@ procedure swap(integer i, integer j)
 end procedure
 
 function getMatchingPermNumber(sequence chunk, integer chunksum, integer noofsetbits)
-  integer result = -1
+  integer result = 0
 
-  -- let a[] represent an arbitrary list of objects to permute
-  -- replace a with perm_chunk
-  perm_chunk = repeat(0, length(chunk)-noofsetbits) & repeat(1, noofsetbits)
-
+  perm_chunk = repeat(1, noofsetbits) & repeat(0, length(chunk)-noofsetbits) 
+  
+  
   log_debug_pretty("Initial Bit chunk ", perm_chunk, {})
-
-  -- let N equal the length of a[]
-  integer N = length(perm_chunk)
-
-  -- create an integer array p[] of size N+1 to control the iteration
-  sequence p = repeat(0, N+1)
-
-  -- initialize p[0] to 0, p[1] to 1, p[2] to 2, ..., p[N] to N
-  for i = 1 to N+1 do
-    p[i] = i
-  end for
-
-  log_debug_pretty("P is ", p, {})
-
-  -- initialize index variable i to 1
-  integer i1 = 2
-  integer j = 1
- 
-  while (i1 < N+1) do
-    log_debug("i1 is " & int_to_string(i1))
-    p[i1] -= 1
-
-    log_debug("p[" & int_to_string(i1) & "] is " & int_to_string(p[i1]))
-
-    if (mod(i1,2) = 1) then
-      j = p[i1]
-    else 
-      j = 1
-    end if
-
-    log_debug("j is " & int_to_string(j))
-
-
-    if (perm_chunk[j] != perm_chunk[i1]) then
-      swap(j, i1)
-    end if
-    i1 = 2
-
-    while (p[i1] = 1) do
-      p[i1] = i1
-      i1 += 1 
-    end while
-    
-  end while 
+  log_debug("No of bits is: " & int_to_string(bitlib_no_of_bits(perm_chunk)))
+  log_debug_pretty("Added one and now chunk is ", bitlib_add_one(perm_chunk), {})
+  log_debug("No of bits is: " & int_to_string(bitlib_no_of_bits(bitlib_add_one(perm_chunk))))
+  --log_debug_pretty("Permuted Bit chunk ", bitlib_permuteone(perm_chunk), {})
+  
+  sequence perm1 = bitlib_permuteone(perm_chunk)
+  result += 1
+  
+  while (not(equal(chunk, perm1))) do
+    perm1 = bitlib_permuteone(perm1)
+    result += 1
+  end while
 
   return result
 end function
@@ -130,8 +97,8 @@ function process_encode_03_chunk(sequence chunk)
   sequence result = {}
   log_debug("Chunk length is " & int_to_string(length(chunk)))
 
-  sequence first16bytechunk = chunk[1..16]
-  log_debug_pretty("First 16 byte chunk is ", first16bytechunk, {})
+  sequence first16bytechunk = chunk[1..3]
+  log_debug_pretty("First 3 byte chunk is ", first16bytechunk, {})
 
   integer first16bytechunksum = math:sum(first16bytechunk)
   log_debug(" Sum is: " & int_to_string(first16bytechunksum))
@@ -144,19 +111,14 @@ function process_encode_03_chunk(sequence chunk)
 
   log_debug_pretty("Bit chunk ", first16bytechunk_asbits, {})
 
-  log_debug("First bit :" & int_to_string(first16bytechunk_asbits[1]))
+  integer bitfrequency =  bitlib_no_of_bits(first16bytechunk_asbits)
 
-  sequence bitfrequency =  raw_frequency(first16bytechunk_asbits)
-
-  --log_debug_pretty("Bit frequency ", raw_frequency(first16bytechunk_asbits), {})
-
-  --log_debug("Number of set bits: " & int_to_string(bitfrequency[1][1]))
   
   -- integer matchingpermnumber = getMatchingPermNumber(first16bytechunk_asbits, first16bytechunksum, bitfrequency[1][1])
-  sequence  bitfrequency_sm =  raw_frequency(first16bytechunk_asbits[1..8])
-  integer matchingpermnumber = getMatchingPermNumber(first16bytechunk_asbits[1..8], first16bytechunksum, bitfrequency_sm[1][1])
+  integer bitfrequency_sm =  bitlib_no_of_bits(first16bytechunk_asbits)
+  integer matchingpermnumber = getMatchingPermNumber(first16bytechunk_asbits, first16bytechunksum, bitfrequency_sm)
 
-  -- ithPermutation(10, 3628799)
+  log_debug("Matching perm number " & int_to_string(matchingpermnumber))  
 
   for i = 1 to length(chunk) do
     log_trace_pretty("Getting bits for element " & int_to_string(i) & " of chunk", int_to_bits(chunk[i],8), {})

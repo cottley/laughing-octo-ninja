@@ -2,6 +2,7 @@
 include file.e
 include get.e
 include machine.e
+include lib/bitlib.e
 include lib/logging.e
 include lib/util.e
 include alg/encdec01.e
