@@ -28,6 +28,7 @@ end procedure
 global procedure log_trace(sequence message)
    if (LOG_LEVEL <= LOG_LEVEL_TRACE) and (file_num != -1) then
      printf(file_num, "[TRACE] " & message & '\n')
+     flush(file_num)
    end if
 end procedure
 
@@ -36,12 +37,14 @@ global procedure log_trace_pretty(sequence message, object x, sequence options)
      printf(file_num, "[TRACE] " & message & " ")
      pretty_print(file_num, x, options)
      printf(file_num, "\n")
+     flush(file_num)
    end if
 end procedure
 
 global procedure log_debug(sequence message)
    if (LOG_LEVEL <= LOG_LEVEL_DEBUG) and (file_num != -1) then
      printf(file_num, "[DEBUG] " & message & '\n')
+     flush(file_num)
    end if
 end procedure
 
@@ -50,24 +53,28 @@ global procedure log_debug_pretty(sequence message, object x, sequence options)
      printf(file_num, "[DEBUG] " & message & " ")
      pretty_print(file_num, x, options)
      printf(file_num, "\n")
+     flush(file_num)
    end if
 end procedure
 
 global procedure log_info(sequence message)
    if (LOG_LEVEL <= LOG_LEVEL_INFO) and (file_num != -1) then
      printf(file_num, "[INFO] " & message & '\n')
+     flush(file_num)
    end if
 end procedure
 
 global procedure log_error(sequence message)
    if (LOG_LEVEL <= LOG_LEVEL_ERROR) and (file_num != -1) then
      printf(file_num, "[ERROR] " & message & '\n')
+     flush(file_num)
    end if
 end procedure
 
 global procedure log_fatal(sequence message)
    if (LOG_LEVEL <= LOG_LEVEL_ERROR) and (file_num != -1) then
      printf(file_num, "[FATAL] " & message & '\n')
+     flush(file_num)
    end if
 end procedure
 
