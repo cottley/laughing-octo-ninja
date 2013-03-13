@@ -46,13 +46,16 @@ global function bitlib_permuteone_count(sequence in)
   return result
 end function
 
-
+/*
+ Name: bitlib_permuteone
+ Note: This function generates the next bit-wise permutation of the sequence.
+*/
 global function bitlib_permuteone(sequence in)
   -- Find last set bit
-  integer lastSetBitLoc = rfind(1, in)
+  integer lastSetBitLoc = rfind(1, in) 
   integer sequenceSize = length(in)
   sequence result = in 
-  if (lastSetBitLoc != sequenceSize) then
+  if ((lastSetBitLoc != sequenceSize) and (lastSetBitLoc != 0)) then
     result[lastSetBitLoc+1] = 1
     result[lastSetBitLoc] = 0
   else 
@@ -60,7 +63,6 @@ global function bitlib_permuteone(sequence in)
     integer lastZeroBitLoc = rfind(0, in)
     -- Find the next 1
     integer nextOneLoc = rfind(1, in, lastZeroBitLoc)
-
     if (nextOneLoc != 0) then
       -- We can continue to permute
       result[nextOneLoc+1] = 1
