@@ -89,7 +89,7 @@ procedure testperm(integer sizeofchunk, integer noofsetbits)
 
 end procedure
 
-
+/*
 function getMatchingPermNumber(sequence chunk, integer chunksum, integer noofsetbits)
   integer result = 0
 
@@ -114,9 +114,32 @@ function getMatchingPermNumber(sequence chunk, integer chunksum, integer noofset
 
   return result
 end function
+*/
+
+function getMatchingPermNumber(sequence chunk, integer noofsetbits, integer noofbitgroups)
+  integer result = 0
+
+  sequence perm_chunk_bits = repeat(1, noofsetbits) & repeat(0, length(chunk)-noofsetbits) 
+  
+  sequence perm1 = bitlib_permuteone(perm_chunk_bits)
+
+  if (bitlib_no_of_bit_groups(perm1) = noofbitgroups) then
+    result += 1
+  end if
+  
+  while (not(equal(chunk, perm1))) do
+    perm1 = bitlib_permuteone(perm1)
+    if (bitlib_no_of_bit_groups(perm1) = noofbitgroups) then
+      result += 1
+    end if
+  end while
+
+  return result
+end function
 
 function process_encode_03_chunk(sequence chunk)
   sequence result = {}
+/*
   log_debug("Chunk length is " & int_to_string(length(chunk)))
 
   sequence first16bytechunk = chunk[1..3]
@@ -141,6 +164,50 @@ function process_encode_03_chunk(sequence chunk)
   -- integer matchingpermnumber = getMatchingPermNumber(first16bytechunk_asbits, first16bytechunksum, bitfrequency_sm)
 
   -- log_debug("Matching perm number " & int_to_string(matchingpermnumber))  
+*/
+
+  integer maxcontiguousbits = 0
+/*
+  integer startchunkloc = 1
+  for i = 1 to length(chunk)/3 do
+    sequence chunkofinterest = chunk[startchunkloc..(startchunkloc+2)]
+    -- // log_debug_pretty("3 byte chunk is ", chunkofinterest, {})
+
+    sequence chunkofinterest_asbits = {}
+    for j = 1 to length(chunkofinterest) do
+      chunkofinterest_asbits &= int_to_bits(chunkofinterest[j],8)
+    end for
+
+    integer maxnoofcontbitsforchunk = bitlib_max_no_of_contiguous_bits(chunkofinterest_asbits)
+    if (maxnoofcontbitsforchunk > maxcontiguousbits) then
+      maxcontiguousbits = maxnoofcontbitsforchunk
+    end if
+
+    startchunkloc += 3
+  end for
+*/
+
+  integer startchunkloc = 1
+  for i = 1 to length(chunk)/3 do
+    sequence chunkofinterest = chunk[startchunkloc..(startchunkloc+2)]
+    -- // log_debug_pretty("3 byte chunk is ", chunkofinterest, {})
+
+    sequence chunkofinterest_asbits = {}
+    for j = 1 to length(chunkofinterest) do
+      chunkofinterest_asbits &= int_to_bits(chunkofinterest[j],8)
+    end for
+    log_debug_pretty("Chunk bitstream is ", chunkofinterest_asbits, {})
+
+    integer bitfrequency_sm =  bitlib_no_of_bits(chunkofinterest_asbits)
+    integer bitgrouping_sm = bitlib_no_of_bit_groups(chunkofinterest_asbits)
+    integer matchingpermnumber = getMatchingPermNumber(chunkofinterest_asbits, bitfrequency_sm, bitgrouping_sm)
+    log_debug("Matching perm number " & int_to_string(matchingpermnumber) & " bit frequency " & int_to_string(bitfrequency_sm) & " bit grouping " & int_to_string(bitgrouping_sm))
+
+    startchunkloc += 3
+  end for
+
+  log_debug("Max number of contiguous bits for chunk is " & int_to_string(maxcontiguousbits))
+
 
   for i = 1 to length(chunk) do
     log_trace_pretty("Getting bits for element " & int_to_string(i) & " of chunk", int_to_bits(chunk[i],8), {})
@@ -154,8 +221,9 @@ function process_encode_03_chunk(sequence chunk)
 end function
 
 
-global procedure process_encode_03(sequence infilename, sequence outfilename, integer buffsize)
+global procedure process_encode_03(sequence infilename, sequence outfilename, integer inbuffsize)
   printf(1, " Algorithm: 03 - Predictive Permutation\n")
+  integer buffsize = 1026
   integer ifn, ofn
   ifn = open(infilename, "rb")
   ofn = open(outfilename, "wb")
@@ -165,8 +233,9 @@ global procedure process_encode_03(sequence infilename, sequence outfilename, in
     if (ofn = -1) then
       printf(1, " Error: Unable to open output file for writing\n")
     else
-      integer testsize = 24
-      testperm(testsize, testsize/2)
+      --//integer testsize = 32
+      --//testperm(testsize, testsize/2)
+      --//7 minutes for 32 bits
 
       sequence chunk
       while 1 do

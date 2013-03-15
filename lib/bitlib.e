@@ -35,6 +35,43 @@ global function bitlib_no_of_bits(sequence in)
   return result
 end function
 
+global function bitlib_max_no_of_contiguous_bits(sequence in)
+  integer result = 0
+  integer currentcount = 0
+  for i = 1 to length(in) do
+    if (in[i] = 1) then 
+      currentcount += 1
+    else
+      if (currentcount > result) then
+        result = currentcount
+      end if
+      currentcount = 0
+    end if
+  end for
+  if (currentcount > result) then
+    result = currentcount
+  end if
+  return result
+end function
+
+global function bitlib_no_of_bit_groups(sequence in)
+  integer result = 0
+  integer ingroup = FALSE
+  for i = 1 to length(in) do
+    if (in[i] = 1) then
+      if (not(ingroup)) then
+        ingroup = TRUE
+        result += 1
+      end if
+    else 
+      if (ingroup) then
+        ingroup = FALSE
+      end if
+    end if
+  end for
+  return result
+end function
+
 global function bitlib_permuteone_count(sequence in)
   integer noofbits = bitlib_no_of_bits(in)
   sequence result = bitlib_add_one(in)
