@@ -51,39 +51,64 @@ end function
  Note: This function generates the next bit-wise permutation of the sequence.
 */
 global function bitlib_permuteone(sequence in)
+  --log_debug_pretty("bitlib_permuteone in ", in, {})
+
   -- Find last set bit
   integer lastSetBitLoc = rfind(1, in) 
+  --log_debug("lastSetBitLoc is: " & int_to_string(lastSetBitLoc))
   integer sequenceSize = length(in)
+  --log_debug("sequenceSize is: " & int_to_string(sequenceSize))
   sequence result = in 
   if ((lastSetBitLoc != sequenceSize) and (lastSetBitLoc != 0)) then
     result[lastSetBitLoc+1] = 1
     result[lastSetBitLoc] = 0
+    --log_debug("swapped location " & int_to_string(lastSetBitLoc) & " and " & int_to_string(lastSetBitLoc+1))
+
   else 
     -- Find the last 0
     integer lastZeroBitLoc = rfind(0, in)
+    --log_debug("lastZeroBitLoc is: " & int_to_string(lastZeroBitLoc))
+
     -- Find the next 1
     integer nextOneLoc = rfind(1, in, lastZeroBitLoc)
+    --log_debug("nextOneLoc is: " & int_to_string(nextOneLoc))
+
     if (nextOneLoc != 0) then
       -- We can continue to permute
+      --log_debug("We can continue to permute")
       result[nextOneLoc+1] = 1
       result[nextOneLoc] = 0
+      --log_debug("swapped location " & int_to_string(nextOneLoc) & " and " & int_to_string(nextOneLoc+1))
   
-      integer index = nextOneLoc + 1
-      integer endindexoffset = 0
-      while (index < (sequenceSize-endindexoffset)) do
-        index += 1
-        endindexoffset += 1
 
+      integer index = nextOneLoc + 2
+      --log_debug("index is: " & int_to_string(index))
+
+      integer endindexoffset = 0
+      --log_debug("endindexoffset is: " & int_to_string(endindexoffset))
+
+      --log_debug("upper limit is: " & int_to_string(sequenceSize-endindexoffset))
+
+      while (index < (sequenceSize-endindexoffset)) do
+        --log_debug("can swap")
         integer savedbit = result[index]
         result[index] = result[(sequenceSize-endindexoffset)]
         result[sequenceSize-endindexoffset] = savedbit
+
+        --log_debug("swapped locations " & int_to_string(index) & " and " & int_to_string(sequenceSize-endindexoffset))
+
+
+        index += 1
+        endindexoffset += 1
       end while
 
     else
       -- No 1s left, can't permute anymore
+     --log_debug("No 1s left, can't permute anymore")
     end if
 
   end if
+  --log_debug_pretty("bitlib_permuteone result ", result, {})
   return result
 end function
 
